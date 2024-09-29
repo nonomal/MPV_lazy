@@ -1,6 +1,6 @@
 --[[
 SOURCE_ https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua
-COMMIT_ e7f153db58bba3c48099d1058615171483ff51dd
+COMMIT_ 1c55d600ab7df360acf1403d9586892600371166
 文档_ stats_plus.conf
 
 mpv.conf的（可选）前置条件 --load-stats-overlay=no
@@ -1019,6 +1019,22 @@ local function add_video(s)
             local attrs = has_prefix and {indent=" ", nl="", prefix_sep=""}
                                       or {prefix="当前帧类型："}
             append(s, "Interlaced", attrs)
+        end
+    end
+
+        local timecodes = {
+            ["gop-timecode"] = "GOP",
+            ["smpte-timecode"] = "SMPTE",
+            ["estimated-smpte-timecode"] = "预估的SMPTE",
+        }
+        for prop, name in pairs(timecodes) do
+            if frame_info and frame_info[prop] then
+                local attrs = has_prefix and {prefix=name .. " 时间码：",
+                                              indent=o.prefix_sep .. o.prefix_sep, nl=""}
+                                          or {prefix=name .. " 时间码："}
+                append(s, frame_info[prop], attrs)
+                break
+            end
         end
     end
 
